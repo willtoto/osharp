@@ -878,6 +878,10 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
         {
             Check.GreaterThan((int)key, keyName, 0);
         }
+        else if(type == typeof(long))
+        {
+            Check.GreaterThan((long)key, keyName, 0);
+        }
         else if (type == typeof(string))
         {
             Check.NotNullOrEmpty((string)key, keyName);
@@ -888,7 +892,7 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
         }
     }
 
-    private void SetEmptyGuidKey(TEntity entity)
+    private void SetEmptyKey(TEntity entity)
     {
         Type keyType = typeof(TKey);
         //自增int
@@ -952,7 +956,7 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
         for (int i = 0; i < entities.Length; i++)
         {
             TEntity entity = entities[i];
-            SetEmptyGuidKey(entity);
+            SetEmptyKey(entity);
             entities[i] = entity.CheckICreatedTime<TEntity, TKey>();
 
             string userIdTypeName = _principal?.Identity.GetClaimValueFirstOrDefault(OsharpConstants.UserIdTypeName);

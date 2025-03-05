@@ -40,7 +40,7 @@ public class LoginLogOutputDto : IOutputDto
     /// <summary>
     /// 获取或设置 编号
     /// </summary>
-    public Guid Id { get; set; }
+    public long Id { get; set; }
 
     /// <summary>
     /// 获取或设置 登录IP
@@ -65,7 +65,7 @@ public class LoginLogOutputDto : IOutputDto
     /// <summary>
     /// 获取或设置 用户编号
     /// </summary>
-    public int UserId { get; set; }
+    public long UserId { get; set; }
 
     /// <summary>
     /// 获取或设置 用户名

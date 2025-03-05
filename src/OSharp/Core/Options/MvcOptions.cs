@@ -23,4 +23,10 @@ public class MvcOptions
     /// 获取或设置 是否URL小写，默认：false
     /// </summary>
     public bool IsLowercaseUrls { get; set; } = false;
+
+    /// <summary>
+    /// 获取或设置 是否将Long类型转换为字符串，默认：true
+    /// </summary>
+    public bool IsLongToStringConvert { get; set; } = true;
+
 }

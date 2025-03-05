@@ -12,7 +12,7 @@ using OSharp.Hosting.Identity.Entities;
 
 namespace OSharp.Hosting.Identity;
 
-public class RoleSeedDataInitializer : SeedDataInitializerBase<Role, int>
+public class RoleSeedDataInitializer : SeedDataInitializerBase<Role, long>
 {
     private readonly IServiceProvider _rootProvider;
 

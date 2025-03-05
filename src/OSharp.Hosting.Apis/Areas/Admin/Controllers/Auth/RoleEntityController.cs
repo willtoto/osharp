@@ -116,7 +116,7 @@ public class RoleEntityController : AdminApiControllerBase
     [DependOnFunction(nameof(Read))]
     [UnitOfWork]
     [Description("设置过滤条件")]
-    public async Task<AjaxResult> SetFilterGroup(Guid id, [FromBody]FilterGroup group)
+    public async Task<AjaxResult> SetFilterGroup(long id, [FromBody]FilterGroup group)
     {
         OperationResult result = await _dataAuthManager.SetFilterGroup(id, group);
         return result.ToAjaxResult();
@@ -132,7 +132,7 @@ public class RoleEntityController : AdminApiControllerBase
     [DependOnFunction(nameof(Read))]
     [UnitOfWork]
     [Description("删除")]
-    public async Task<AjaxResult> Delete(params Guid[] ids)
+    public async Task<AjaxResult> Delete(params long[] ids)
     {
         Check.NotNull(ids, nameof(ids));
 

@@ -37,7 +37,7 @@ public interface IFunctionHandler
     /// </summary>
     /// <param name="functionId">功能编号</param>
     /// <returns></returns>
-    IFunction GetFunction(Guid functionId);
+    IFunction GetFunction(long functionId);
 
     /// <summary>
     /// 查找指定条件的功能信息

@@ -14,13 +14,13 @@ namespace OSharp.Authorization.Dtos;
 /// 实体角色输入DTO基类
 /// </summary>
 /// <typeparam name="TRoleKey">角色编号类型</typeparam>
-public abstract class EntityRoleInputDtoBase<TRoleKey> : IInputDto<Guid>
+public abstract class EntityRoleInputDtoBase<TRoleKey> : IInputDto<long>
 {
     /// <summary>
     /// 获取或设置 主键，唯一标识
     /// </summary>
     [DisplayName("编号")]
-    public Guid Id { get; set; }
+    public long Id { get; set; }
 
     /// <summary>
     /// 获取或设置 角色编号
@@ -32,7 +32,7 @@ public abstract class EntityRoleInputDtoBase<TRoleKey> : IInputDto<Guid>
     /// 获取或设置 数据编号
     /// </summary>
     [DisplayName("数据编号")]
-    public Guid EntityId { get; set; }
+    public long EntityId { get; set; }
 
     /// <summary>
     /// 获取或设置 数据权限操作

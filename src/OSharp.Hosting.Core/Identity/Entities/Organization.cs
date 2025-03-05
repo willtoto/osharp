@@ -14,7 +14,7 @@ namespace OSharp.Hosting.Identity.Entities;
 /// </summary>
 [Description("组织机构信息")]
 [TableNamePrefix("Identity")]
-public class Organization : EntityBase<int>, ILockable, ICreatedTime
+public class Organization : EntityBase<long>, ILockable, ICreatedTime
 {
     /// <summary>
     /// 获取或设置 名称
@@ -38,7 +38,7 @@ public class Organization : EntityBase<int>, ILockable, ICreatedTime
     /// 获取或设置 父组织机构
     /// </summary>
     [DisplayName("父组织机构编号")]
-    public int? ParentId { get; set; }
+    public long? ParentId { get; set; }
 
     /// <summary>
     /// 获取或设置 是否锁定当前信息

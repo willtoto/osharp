@@ -10,7 +10,7 @@
 using OSharp.Json;
 
 
-namespace OSharp.Authorization.DataAuthorization;
+namespace OSharp.Authorization;
 
 /// <summary>
 /// 数据权限管理器
@@ -41,9 +41,9 @@ public abstract class DataAuthorizationManagerBase<TEntityInfo, TEntityInfoInput
         _provider = provider;
     }
 
-    protected IRepository<TEntityInfo, Guid> EntityInfoRepository => _provider.GetRequiredService<IRepository<TEntityInfo, Guid>>();
+    protected IRepository<TEntityInfo, long> EntityInfoRepository => _provider.GetRequiredService<IRepository<TEntityInfo, long>>();
 
-    protected IRepository<TEntityRole, Guid> EntityRoleRepository => _provider.GetRequiredService<IRepository<TEntityRole, Guid>>();
+    protected IRepository<TEntityRole, long> EntityRoleRepository => _provider.GetRequiredService<IRepository<TEntityRole, long>>();
 
     protected IEventBus EventBus => _provider.GetRequiredService<IEventBus>();
 
@@ -64,7 +64,7 @@ public abstract class DataAuthorizationManagerBase<TEntityInfo, TEntityInfoInput
     /// <param name="predicate">检查谓语表达式</param>
     /// <param name="id">更新的实体信息编号</param>
     /// <returns>实体信息是否存在</returns>
-    public virtual Task<bool> CheckEntityInfoExists(Expression<Func<TEntityInfo, bool>> predicate, Guid id = default(Guid))
+    public virtual Task<bool> CheckEntityInfoExists(Expression<Func<TEntityInfo, bool>> predicate, long id = default(long))
     {
         return EntityInfoRepository.CheckExistsAsync(predicate, id);
     }
@@ -76,7 +76,7 @@ public abstract class DataAuthorizationManagerBase<TEntityInfo, TEntityInfoInput
     /// <returns>业务操作结果</returns>
     public virtual Task<OperationResult> UpdateEntityInfos(params TEntityInfoInputDto[] dtos)
     {
-        Check2.Validate<TEntityInfoInputDto, Guid>(dtos, nameof(dtos));
+        Check2.Validate<TEntityInfoInputDto, long>(dtos, nameof(dtos));
         return EntityInfoRepository.UpdateAsync(dtos);
     }
 
@@ -95,7 +95,7 @@ public abstract class DataAuthorizationManagerBase<TEntityInfo, TEntityInfoInput
     /// <param name="predicate">检查谓语表达式</param>
     /// <param name="id">更新的实体角色信息编号</param>
     /// <returns>实体角色信息是否存在</returns>
-    public virtual Task<bool> CheckEntityRoleExists(Expression<Func<TEntityRole, bool>> predicate, Guid id = default(Guid))
+    public virtual Task<bool> CheckEntityRoleExists(Expression<Func<TEntityRole, bool>> predicate, long id = default(long))
     {
         return EntityRoleRepository.CheckExistsAsync(predicate, id);
     }
@@ -107,7 +107,7 @@ public abstract class DataAuthorizationManagerBase<TEntityInfo, TEntityInfoInput
     /// <param name="entityId">实体编号</param>
     /// <param name="operation">操作</param>
     /// <returns>过滤条件组</returns>
-    public virtual FilterGroup[] GetEntityRoleFilterGroups(TRoleKey roleId, Guid entityId, DataAuthOperation operation)
+    public virtual FilterGroup[] GetEntityRoleFilterGroups(TRoleKey roleId, long entityId, DataAuthOperation operation)
     {
         return EntityRoleRepository.QueryAsNoTracking(m => m.RoleId.Equals(roleId) && m.EntityId == entityId && m.Operation == operation)
             .Select(m => m.FilterGroupJson).ToArray().Select(m => m.FromJsonString<FilterGroup>()).ToArray();
@@ -120,7 +120,7 @@ public abstract class DataAuthorizationManagerBase<TEntityInfo, TEntityInfoInput
     /// <returns>业务操作结果</returns>
     public virtual async Task<OperationResult> CreateEntityRoles(params TEntityRoleInputDto[] dtos)
     {
-        Check2.Validate<TEntityRoleInputDto, Guid>(dtos, nameof(dtos));
+        Check2.Validate<TEntityRoleInputDto, long>(dtos, nameof(dtos));
 
         OperationResult result = await EntityRoleRepository.InsertAsync(dtos,
             async dto =>
@@ -154,7 +154,7 @@ public abstract class DataAuthorizationManagerBase<TEntityInfo, TEntityInfoInput
     /// <returns>业务操作结果</returns>
     public virtual async Task<OperationResult> UpdateEntityRoles(params TEntityRoleInputDto[] dtos)
     {
-        Check2.Validate<TEntityRoleInputDto, Guid>(dtos, nameof(dtos));
+        Check2.Validate<TEntityRoleInputDto, long>(dtos, nameof(dtos));
 
         DataAuthCacheRefreshEventData eventData = new DataAuthCacheRefreshEventData();
         OperationResult result = await EntityRoleRepository.UpdateAsync(dtos,
@@ -209,7 +209,7 @@ public abstract class DataAuthorizationManagerBase<TEntityInfo, TEntityInfoInput
     /// <param name="id">权限记录identity.api</param>
     /// <param name="group">过滤条件组</param>
     /// <returns>业务操作结果</returns>
-    public async Task<OperationResult> SetFilterGroup(Guid id, FilterGroup group)
+    public async Task<OperationResult> SetFilterGroup(long id, FilterGroup group)
     {
         TEntityRole entityRole = await EntityRoleRepository.GetAsync(id);
         if (entityRole == null)
@@ -265,7 +265,7 @@ public abstract class DataAuthorizationManagerBase<TEntityInfo, TEntityInfoInput
     /// </summary>
     /// <param name="ids">要删除的实体角色信息编号</param>
     /// <returns>业务操作结果</returns>
-    public virtual async Task<OperationResult> DeleteEntityRoles(params Guid[] ids)
+    public virtual async Task<OperationResult> DeleteEntityRoles(params long[] ids)
     {
         DataAuthCacheRefreshEventData eventData = new DataAuthCacheRefreshEventData();
         OperationResult result = await EntityRoleRepository.DeleteAsync(ids,
