@@ -7,6 +7,7 @@
 //  <last-date>2019-01-06 15:16</last-date>
 // -----------------------------------------------------------------------
 
+using Microsoft.EntityFrameworkCore;
 using OSharp.Hosting.Authorization.Entities;
 using OSharp.Hosting.Identity.Entities;
 
@@ -21,6 +22,8 @@ public partial class EntityRoleConfiguration : EntityTypeConfigurationBase<Entit
     /// <param name="builder">实体类型创建器</param>
     public override void Configure(EntityTypeBuilder<EntityRole> builder)
     {
+        builder.Property(m => m.Id).ValueGeneratedNever();
+
         builder.HasIndex(m => new { m.EntityId, m.RoleId, m.Operation }).HasDatabaseName("EntityRoleIndex").IsUnique();
 
         builder.HasOne<EntityInfo>(er => er.EntityInfo).WithMany().HasForeignKey(m => m.EntityId);

@@ -12,24 +12,797 @@ using OSharp.Entity;
 namespace Liuliu.Demo.Web.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    [Migration("20221110065613_Init")]
-    partial class Init
+    [Migration("20250305052515_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.EntityRole", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("EntityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("FilterGroupJson")
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Operation")
+                        .HasColumnType("int");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("EntityId", "RoleId", "Operation")
+                        .IsUnique()
+                        .HasDatabaseName("EntityRoleIndex");
+
+                    b.ToTable("Auth_EntityRole", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.EntityUser", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("EntityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("FilterGroupJson")
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("EntityId", "UserId")
+                        .HasDatabaseName("EntityUserIndex");
+
+                    b.ToTable("Auth_EntityUser", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.Module", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<double>("OrderCode")
+                        .HasColumnType("float");
+
+                    b.Property<long?>("ParentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("TreePathString")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Auth_Module", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.ModuleFunction", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("FunctionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ModuleId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FunctionId");
+
+                    b.HasIndex("ModuleId", "FunctionId")
+                        .IsUnique()
+                        .HasDatabaseName("ModuleFunctionIndex");
+
+                    b.ToTable("Auth_ModuleFunction", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.ModuleRole", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ModuleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("ModuleId", "RoleId")
+                        .IsUnique()
+                        .HasDatabaseName("ModuleRoleIndex");
+
+                    b.ToTable("Auth_ModuleRole", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.ModuleUser", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("Disabled")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("ModuleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("ModuleId", "UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ModuleUserIndex");
+
+                    b.ToTable("Auth_ModuleUser", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.LoginLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Ip")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LogoutTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Identity_LoginLog", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.Organization", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ParentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Remark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Identity_Organization", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.Role", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("MessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MessageId");
+
+                    b.HasIndex("NormalizedName", "DeletedTime")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[DeletedTime] IS NOT NULL");
+
+                    b.ToTable("Identity_Role", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.RoleClaim", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ClaimType")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("Identity_RoleClaim", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.User", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("HeadImg")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("MessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("NickName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("NormalizeEmail")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Remark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MessageId");
+
+                    b.HasIndex("NormalizeEmail", "DeletedTime")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName", "DeletedTime")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[DeletedTime] IS NOT NULL");
+
+                    b.ToTable("Identity_User", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.UserClaim", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ClaimType")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Identity_UserClaim", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.UserDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("RegisterIp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Identity_UserDetail", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.UserLogin", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Avatar")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("LoginProvider", "ProviderKey")
+                        .IsUnique()
+                        .HasDatabaseName("UserLoginIndex")
+                        .HasFilter("[LoginProvider] IS NOT NULL AND [ProviderKey] IS NOT NULL");
+
+                    b.ToTable("Identity_UserLogin", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.UserRole", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId", "RoleId", "DeletedTime")
+                        .IsUnique()
+                        .HasDatabaseName("UserRoleIndex")
+                        .HasFilter("[DeletedTime] IS NOT NULL");
+
+                    b.ToTable("Identity_UserRole", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.UserToken", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Value")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "LoginProvider", "Name")
+                        .IsUnique()
+                        .HasDatabaseName("UserTokenIndex")
+                        .HasFilter("[LoginProvider] IS NOT NULL AND [Name] IS NOT NULL");
+
+                    b.ToTable("Identity_UserToken", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Infos.Entities.Message", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("BeginDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("CanReply")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSended")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MessageType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewReplyCount")
+                        .HasColumnType("int");
+
+                    b.Property<long>("SenderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Infos_Message", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Infos.Entities.MessageReceive", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("MessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("NewReplyCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReadDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MessageId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Infos_MessageReceive", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Infos.Entities.MessageReply", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("BelongMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("ParentMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ParentReplyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BelongMessageId");
+
+                    b.HasIndex("ParentMessageId");
+
+                    b.HasIndex("ParentReplyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Infos_MessageReply", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Systems.Entities.AuditEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("EntityKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OperateType")
+                        .HasColumnType("int");
+
+                    b.Property<long>("OperationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TypeName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OperationId");
+
+                    b.ToTable("Systems_AuditEntity", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Systems.Entities.AuditOperation", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Browser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Elapsed")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FunctionName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ip")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NickName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OperationSystem")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ResultType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Systems_AuditOperation", (string)null);
+                });
+
+            modelBuilder.Entity("Liuliu.Demo.Systems.Entities.AuditProperty", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("AuditEntityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DataType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FieldName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NewValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OriginalValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuditEntityId");
+
+                    b.ToTable("Systems_AuditProperty", (string)null);
+                });
+
             modelBuilder.Entity("OSharp.Authorization.EntityInfos.EntityInfo", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("AuditEnabled")
                         .HasColumnType("bit");
@@ -41,7 +814,6 @@ namespace Liuliu.Demo.Web.Migrations
 
                     b.Property<string>("PropertyJson")
                         .IsRequired()
-                        .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TypeName")
@@ -60,9 +832,8 @@ namespace Liuliu.Demo.Web.Migrations
 
             modelBuilder.Entity("OSharp.Authorization.Functions.Function", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("AccessType")
                         .HasColumnType("int");
@@ -122,9 +893,8 @@ namespace Liuliu.Demo.Web.Migrations
 
             modelBuilder.Entity("OSharp.Core.Systems.KeyValue", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Display")
                         .HasMaxLength(100)
@@ -161,901 +931,7 @@ namespace Liuliu.Demo.Web.Migrations
                     b.ToTable("Systems_KeyValue", (string)null);
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.EntityRole", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("EntityId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("FilterGroupJson")
-                        .HasMaxLength(5000)
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Operation")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("EntityId", "RoleId", "Operation")
-                        .IsUnique()
-                        .HasDatabaseName("EntityRoleIndex");
-
-                    b.ToTable("Auth_EntityRole", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.EntityUser", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("EntityId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("FilterGroupJson")
-                        .HasMaxLength(5000)
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("EntityId", "UserId")
-                        .HasDatabaseName("EntityUserIndex");
-
-                    b.ToTable("Auth_EntityUser", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.Module", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<double>("OrderCode")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Remark")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("TreePathString")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("Auth_Module", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.ModuleFunction", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("FunctionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("ModuleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FunctionId");
-
-                    b.HasIndex("ModuleId", "FunctionId")
-                        .IsUnique()
-                        .HasDatabaseName("ModuleFunctionIndex");
-
-                    b.ToTable("Auth_ModuleFunction", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.ModuleRole", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("ModuleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("ModuleId", "RoleId")
-                        .IsUnique()
-                        .HasDatabaseName("ModuleRoleIndex");
-
-                    b.ToTable("Auth_ModuleRole", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.ModuleUser", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Disabled")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ModuleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("ModuleId", "UserId")
-                        .IsUnique()
-                        .HasDatabaseName("ModuleUserIndex");
-
-                    b.ToTable("Auth_ModuleUser", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.LoginLog", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Ip")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime?>("LogoutTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserAgent")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Identity_LoginLog", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.Organization", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Remark")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("Identity_Organization", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSystem")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("MessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("NormalizedName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Remark")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MessageId");
-
-                    b.HasIndex("NormalizedName", "DeletedTime")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[DeletedTime] IS NOT NULL");
-
-                    b.ToTable("Identity_Role", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.RoleClaim", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("Identity_RoleClaim", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("HeadImg")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSystem")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid?>("MessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("NickName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("NormalizeEmail")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Remark")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MessageId");
-
-                    b.HasIndex("NormalizeEmail", "DeletedTime")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName", "DeletedTime")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[DeletedTime] IS NOT NULL");
-
-                    b.ToTable("Identity_User", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.UserClaim", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Identity_UserClaim", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.UserDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("RegisterIp")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Identity_UserDetail", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.UserLogin", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Avatar")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("LoginProvider", "ProviderKey")
-                        .IsUnique()
-                        .HasDatabaseName("UserLoginIndex")
-                        .HasFilter("[LoginProvider] IS NOT NULL AND [ProviderKey] IS NOT NULL");
-
-                    b.ToTable("Identity_UserLogin", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.UserRole", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId", "RoleId", "DeletedTime")
-                        .IsUnique()
-                        .HasDatabaseName("UserRoleIndex")
-                        .HasFilter("[DeletedTime] IS NOT NULL");
-
-                    b.ToTable("Identity_UserRole", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.UserToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId", "LoginProvider", "Name")
-                        .IsUnique()
-                        .HasDatabaseName("UserTokenIndex")
-                        .HasFilter("[LoginProvider] IS NOT NULL AND [Name] IS NOT NULL");
-
-                    b.ToTable("Identity_UserToken", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Infos.Entities.Message", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("BeginDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("CanReply")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSended")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MessageType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NewReplyCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Infos_Message", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Infos.Entities.MessageReceive", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("MessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("NewReplyCount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ReadDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MessageId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Infos_MessageReceive", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Infos.Entities.MessageReply", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BelongMessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("ParentMessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ParentReplyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BelongMessageId");
-
-                    b.HasIndex("ParentMessageId");
-
-                    b.HasIndex("ParentReplyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Infos_MessageReply", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Systems.Entities.AuditEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("EntityKey")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("OperateType")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("OperationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TypeName")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OperationId");
-
-                    b.ToTable("Systems_AuditEntity", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Systems.Entities.AuditOperation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Browser")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Elapsed")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FunctionName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Ip")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Message")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("NickName")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("OperationSystem")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<int>("ResultType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserAgent")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("UserId")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Systems_AuditOperation", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Systems.Entities.AuditProperty", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AuditEntityId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DataType")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("DisplayName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("FieldName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("NewValue")
-                        .HasMaxLength(5000)
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OriginalValue")
-                        .HasMaxLength(5000)
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuditEntityId");
-
-                    b.ToTable("Systems_AuditProperty", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Systems.Entities.Menu", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Acl")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Data")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("Icon")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSystem")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<double>("OrderCode")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Target")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("TreePathString")
-                        .HasMaxLength(3000)
-                        .HasColumnType("nvarchar(3000)");
-
-                    b.Property<string>("Url")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("Systems_Menu", (string)null);
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.EntityRole", b =>
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.EntityRole", b =>
                 {
                     b.HasOne("OSharp.Authorization.EntityInfos.EntityInfo", "EntityInfo")
                         .WithMany()
@@ -1063,7 +939,7 @@ namespace Liuliu.Demo.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSharp.Hosting.Identity.Entities.Role", "Role")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1074,7 +950,7 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.EntityUser", b =>
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.EntityUser", b =>
                 {
                     b.HasOne("OSharp.Authorization.EntityInfos.EntityInfo", "EntityInfo")
                         .WithMany()
@@ -1082,7 +958,7 @@ namespace Liuliu.Demo.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSharp.Hosting.Identity.Entities.User", "User")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1093,16 +969,16 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.Module", b =>
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.Module", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Authorization.Entities.Module", "Parent")
+                    b.HasOne("Liuliu.Demo.Authorization.Entities.Module", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
 
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.ModuleFunction", b =>
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.ModuleFunction", b =>
                 {
                     b.HasOne("OSharp.Authorization.Functions.Function", "Function")
                         .WithMany()
@@ -1110,7 +986,7 @@ namespace Liuliu.Demo.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSharp.Hosting.Authorization.Entities.Module", "Module")
+                    b.HasOne("Liuliu.Demo.Authorization.Entities.Module", "Module")
                         .WithMany()
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1121,15 +997,15 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("Module");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.ModuleRole", b =>
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.ModuleRole", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Authorization.Entities.Module", "Module")
+                    b.HasOne("Liuliu.Demo.Authorization.Entities.Module", "Module")
                         .WithMany()
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSharp.Hosting.Identity.Entities.Role", "Role")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1140,15 +1016,15 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.ModuleUser", b =>
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.ModuleUser", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Authorization.Entities.Module", "Module")
+                    b.HasOne("Liuliu.Demo.Authorization.Entities.Module", "Module")
                         .WithMany()
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSharp.Hosting.Identity.Entities.User", "User")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1159,9 +1035,9 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.LoginLog", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.LoginLog", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Identity.Entities.User", "User")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1170,23 +1046,23 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.Organization", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.Organization", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Identity.Entities.Organization", null)
+                    b.HasOne("Liuliu.Demo.Identity.Entities.Organization", null)
                         .WithMany()
                         .HasForeignKey("ParentId");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.Role", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.Role", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Infos.Entities.Message", null)
+                    b.HasOne("Liuliu.Demo.Infos.Entities.Message", null)
                         .WithMany("PublicRoles")
                         .HasForeignKey("MessageId");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.RoleClaim", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.RoleClaim", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Identity.Entities.Role", "Role")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.Role", "Role")
                         .WithMany("RoleClaims")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1195,16 +1071,16 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.User", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.User", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Infos.Entities.Message", null)
+                    b.HasOne("Liuliu.Demo.Infos.Entities.Message", null)
                         .WithMany("Recipients")
                         .HasForeignKey("MessageId");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.UserClaim", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.UserClaim", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Identity.Entities.User", "User")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.User", "User")
                         .WithMany("UserClaims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1213,20 +1089,20 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.UserDetail", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.UserDetail", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Identity.Entities.User", "User")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.User", "User")
                         .WithOne("UserDetail")
-                        .HasForeignKey("OSharp.Hosting.Identity.Entities.UserDetail", "UserId")
+                        .HasForeignKey("Liuliu.Demo.Identity.Entities.UserDetail", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.UserLogin", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.UserLogin", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Identity.Entities.User", "User")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.User", "User")
                         .WithMany("UserLogins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1235,15 +1111,15 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.UserRole", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.UserRole", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Identity.Entities.Role", "Role")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSharp.Hosting.Identity.Entities.User", "User")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1254,9 +1130,9 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.UserToken", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.UserToken", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Identity.Entities.User", "User")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.User", "User")
                         .WithMany("UserTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1265,9 +1141,9 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Infos.Entities.Message", b =>
+            modelBuilder.Entity("Liuliu.Demo.Infos.Entities.Message", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Identity.Entities.User", "Sender")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.User", "Sender")
                         .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1276,15 +1152,15 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Infos.Entities.MessageReceive", b =>
+            modelBuilder.Entity("Liuliu.Demo.Infos.Entities.MessageReceive", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Infos.Entities.Message", "Message")
+                    b.HasOne("Liuliu.Demo.Infos.Entities.Message", "Message")
                         .WithMany("Receives")
                         .HasForeignKey("MessageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSharp.Hosting.Identity.Entities.User", "User")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1295,27 +1171,27 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Infos.Entities.MessageReply", b =>
+            modelBuilder.Entity("Liuliu.Demo.Infos.Entities.MessageReply", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Infos.Entities.Message", "BelongMessage")
+                    b.HasOne("Liuliu.Demo.Infos.Entities.Message", "BelongMessage")
                         .WithMany()
                         .HasForeignKey("BelongMessageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("OSharp.Hosting.Infos.Entities.Message", "ParentMessage")
+                    b.HasOne("Liuliu.Demo.Infos.Entities.Message", "ParentMessage")
                         .WithMany("Replies")
                         .HasForeignKey("ParentMessageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("OSharp.Hosting.Infos.Entities.MessageReply", "ParentReply")
+                    b.HasOne("Liuliu.Demo.Infos.Entities.MessageReply", "ParentReply")
                         .WithMany("Replies")
                         .HasForeignKey("ParentReplyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("OSharp.Hosting.Identity.Entities.User", "User")
+                    b.HasOne("Liuliu.Demo.Identity.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1330,9 +1206,9 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Systems.Entities.AuditEntity", b =>
+            modelBuilder.Entity("Liuliu.Demo.Systems.Entities.AuditEntity", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Systems.Entities.AuditOperation", "Operation")
+                    b.HasOne("Liuliu.Demo.Systems.Entities.AuditOperation", "Operation")
                         .WithMany("AuditEntities")
                         .HasForeignKey("OperationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1341,9 +1217,9 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("Operation");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Systems.Entities.AuditProperty", b =>
+            modelBuilder.Entity("Liuliu.Demo.Systems.Entities.AuditProperty", b =>
                 {
-                    b.HasOne("OSharp.Hosting.Systems.Entities.AuditEntity", "AuditEntity")
+                    b.HasOne("Liuliu.Demo.Systems.Entities.AuditEntity", "AuditEntity")
                         .WithMany("Properties")
                         .HasForeignKey("AuditEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1352,28 +1228,19 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("AuditEntity");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Systems.Entities.Menu", b =>
-                {
-                    b.HasOne("OSharp.Hosting.Systems.Entities.Menu", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Authorization.Entities.Module", b =>
+            modelBuilder.Entity("Liuliu.Demo.Authorization.Entities.Module", b =>
                 {
                     b.Navigation("Children");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.Role", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.Role", b =>
                 {
                     b.Navigation("RoleClaims");
 
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Identity.Entities.User", b =>
+            modelBuilder.Entity("Liuliu.Demo.Identity.Entities.User", b =>
                 {
                     b.Navigation("UserClaims");
 
@@ -1386,7 +1253,7 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("UserTokens");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Infos.Entities.Message", b =>
+            modelBuilder.Entity("Liuliu.Demo.Infos.Entities.Message", b =>
                 {
                     b.Navigation("PublicRoles");
 
@@ -1397,24 +1264,19 @@ namespace Liuliu.Demo.Web.Migrations
                     b.Navigation("Replies");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Infos.Entities.MessageReply", b =>
+            modelBuilder.Entity("Liuliu.Demo.Infos.Entities.MessageReply", b =>
                 {
                     b.Navigation("Replies");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Systems.Entities.AuditEntity", b =>
+            modelBuilder.Entity("Liuliu.Demo.Systems.Entities.AuditEntity", b =>
                 {
                     b.Navigation("Properties");
                 });
 
-            modelBuilder.Entity("OSharp.Hosting.Systems.Entities.AuditOperation", b =>
+            modelBuilder.Entity("Liuliu.Demo.Systems.Entities.AuditOperation", b =>
                 {
                     b.Navigation("AuditEntities");
-                });
-
-            modelBuilder.Entity("OSharp.Hosting.Systems.Entities.Menu", b =>
-                {
-                    b.Navigation("Children");
                 });
 #pragma warning restore 612, 618
         }
