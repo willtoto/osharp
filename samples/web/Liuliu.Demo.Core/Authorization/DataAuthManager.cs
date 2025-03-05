@@ -13,11 +13,9 @@ using Liuliu.Demo.Authorization.Dtos;
 using Liuliu.Demo.Authorization.Entities;
 using Liuliu.Demo.Identity.Entities;
 
-using OSharp.Authorization.DataAuthorization;
+using OSharp.Authorization;
 using OSharp.Authorization.Dtos;
 using OSharp.Authorization.EntityInfos;
-using OSharp.Entity;
-using OSharp.EventBuses;
 
 
 namespace Liuliu.Demo.Authorization
@@ -26,7 +24,7 @@ namespace Liuliu.Demo.Authorization
     /// 数据权限管理器
     /// </summary>
     //[Dependency(ServiceLifetime.Scoped, AddSelf = true)]
-    public class DataAuthManager : DataAuthorizationManagerBase<EntityInfo, EntityInfoInputDto, EntityRole, EntityRoleInputDto, Role, int>
+    public class DataAuthManager : DataAuthorizationManagerBase<EntityInfo, EntityInfoInputDto, EntityRole, EntityRoleInputDto, Role, long>
     {
         /// <summary>
         /// 初始化一个 SecurityManager 类型的新实例
