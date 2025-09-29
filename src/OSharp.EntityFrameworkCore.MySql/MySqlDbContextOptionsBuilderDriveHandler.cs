@@ -70,7 +70,9 @@ public class MySqlDbContextOptionsBuilderDriveHandler : IDbContextOptionsBuilder
     /// 重写以实现<see cref="MySqlDbContextOptionsBuilder"/>的自定义行为
     /// </summary>
     protected virtual void  MySqlDbContextOptionsBuilderAction(MySqlDbContextOptionsBuilder options)
-    { }
+    {
+        options.UseMicrosoftJson();
+    }
 
     /// <summary>
     /// 重写以实现<see cref="DbContextOptionsBuilder"/>的自定义行为

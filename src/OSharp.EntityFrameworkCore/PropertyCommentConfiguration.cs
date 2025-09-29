@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 //  <copyright file="EntityPropertyCommentConfiguration.cs" company="OSharp开源团队">
 //      Copyright (c) 2014-2021 OSharp. All rights reserved.
 //  </copyright>
@@ -31,7 +31,7 @@ public class PropertyCommentConfiguration : IEntityBatchConfiguration
             }
 
             string display = mutableProperty.PropertyInfo.GetDescription();
-            modelBuilder.Entity(mutableEntityType.ClrType).Property(mutableProperty.PropertyInfo.Name).HasComment(display);
+            //modelBuilder.Entity(mutableEntityType.ClrType).Property(mutableProperty.PropertyInfo.Name).HasComment(display);
         }
     }
 }
