@@ -4,7 +4,7 @@
   <Import Project="../../build/version.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net9.0</TargetFrameworks>
     <PackageId>OSharp.Hosting.Apis</PackageId>
     <OutputType>Library</OutputType>
     <Summary>OSharp框架非业务WebAPI实现</Summary>

@@ -19,7 +19,7 @@ using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using OSharp.AspNetCore.Mvc.Filters;
@@ -47,6 +47,7 @@ namespace OSharp.Hosting.Apis.Areas.Admin.Controllers
         /// </summary>
         protected MessageControllerBase(IServiceProvider provider) : base(provider)
         {
+            InfosContract = provider.GetRequiredService<IInfosContract>();
         }
         
         /// <summary>
@@ -82,9 +83,20 @@ namespace OSharp.Hosting.Apis.Areas.Admin.Controllers
         [DependOnFunction(nameof(Read))]
         [ServiceFilter(typeof(UnitOfWorkAttribute))]
         [Description("新增")]
+        [AllowAnonymous]
         public virtual async Task<AjaxResult> Create(MessageInputDto[] dtos)
         {
-            Check.NotNull(dtos, nameof(dtos));
+            //Check.NotNull(dtos, nameof(dtos));
+            dtos = new MessageInputDto[1];
+            dtos[0] = new MessageInputDto
+            {
+                Id = 1,
+                Title = "系统公告",
+                Content = "系统将于今晚12点至凌晨1点进行维护，届时网站将无法访问，给您带来不便敬请谅解！",
+                MessageType = MessageType.System,
+                SenderId = 10000,
+                CanReply = false
+            };
             OperationResult result = await InfosContract.CreateMessages(dtos);
             return result.ToAjaxResult();
         }
