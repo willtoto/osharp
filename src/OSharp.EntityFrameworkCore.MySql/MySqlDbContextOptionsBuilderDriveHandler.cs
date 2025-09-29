@@ -70,7 +70,20 @@ public class MySqlDbContextOptionsBuilderDriveHandler : IDbContextOptionsBuilder
     /// 重写以实现<see cref="MySqlDbContextOptionsBuilder"/>的自定义行为
     /// </summary>
     protected virtual void  MySqlDbContextOptionsBuilderAction(MySqlDbContextOptionsBuilder options)
-    { }
+    {
+        // 启用 JSON 支持
+        try
+        {
+            // 尝试使用 Pomelo 的 JSON 支持
+            options.UseMicrosoftJson();
+            _logger.LogInformation("成功启用 Pomelo JSON 支持");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning($"启用 Pomelo JSON 支持失败: {ex.Message}");
+            // 如果 Pomelo JSON 支持不可用，记录警告但不阻止启动
+        }
+    }
 
     /// <summary>
     /// 重写以实现<see cref="DbContextOptionsBuilder"/>的自定义行为
