@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 //  <copyright file="InfosService.Message.cs" company="OSharp开源团队">
 //      Copyright (c) 2014-2019 OSharp. All rights reserved.
 //  </copyright>
@@ -64,6 +64,7 @@ public partial class InfosService
                         entity.Recipients = UserRepository.Query(m => dto.RecipientIds.Contains(m.Id)).ToList();
                     }
                 }
+                entity.HomeAddress = new Address { City = "wenzhou", Province = "zhe江", Street = "ceshi" };
 
                 messages.Add(entity);
                 return entity;

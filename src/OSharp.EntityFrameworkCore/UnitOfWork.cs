@@ -119,7 +119,8 @@ public class UnitOfWork : Disposable, IUnitOfWork
         DbContextBase dbContext = (DbContextBase)_provider.GetRequiredService(dbContextType);
         if (!dbContext.ExistsRelationalDatabase())
         {
-            throw new OsharpException($"数据上下文 {dbContext.GetType().FullName} 的数据库不存在，请通过 Migration 功能进行数据迁移创建数据库。");
+            dbContext.Database.EnsureCreated();
+            //throw new OsharpException($"数据上下文 {dbContext.GetType().FullName} 的数据库不存在，请通过 Migration 功能进行数据迁移创建数据库。");
         }
 
         //将连接对象DbConnection缓存到ScopedDictionary，在再次构建DbContextOptionsBuilder的时候可以直接使用

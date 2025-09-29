@@ -15,13 +15,9 @@
 //  <last-editor>郭明锋</last-editor>
 // -----------------------------------------------------------------------
 
-using System;
-using System.ComponentModel;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.DependencyInjection;
 using OSharp.AspNetCore.Mvc.Filters;
 using OSharp.AspNetCore.UI;
 using OSharp.Authorization.Modules;
@@ -31,6 +27,10 @@ using OSharp.Filter;
 using OSharp.Hosting.Infos;
 using OSharp.Hosting.Infos.Dtos;
 using OSharp.Hosting.Infos.Entities;
+using System;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 
 namespace OSharp.Hosting.Apis.Areas.Admin.Controllers
@@ -47,6 +47,7 @@ namespace OSharp.Hosting.Apis.Areas.Admin.Controllers
         /// </summary>
         protected MessageControllerBase(IServiceProvider provider) : base(provider)
         {
+            InfosContract = provider.GetRequiredService<IInfosContract>();
         }
         
         /// <summary>
@@ -79,12 +80,23 @@ namespace OSharp.Hosting.Apis.Areas.Admin.Controllers
         /// <returns>JSON操作结果</returns>
         [HttpPost]
         [ModuleInfo]
-        [DependOnFunction(nameof(Read))]
-        [ServiceFilter(typeof(UnitOfWorkAttribute))]
+        //[DependOnFunction(nameof(Read))]
+        //[ServiceFilter(typeof(UnitOfWorkAttribute))]
         [Description("新增")]
+        [AllowAnonymous]
         public virtual async Task<AjaxResult> Create(MessageInputDto[] dtos)
         {
-            Check.NotNull(dtos, nameof(dtos));
+            //Check.NotNull(dtos, nameof(dtos));
+            dtos = new MessageInputDto[1];
+            dtos[0] = new MessageInputDto
+            {
+                Id = 1,
+                Title = "系统公告",
+                Content = "系统将于今晚12点至凌晨1点进行维护，届时网站将无法访问，给您带来不便敬请谅解！",
+                MessageType = MessageType.System,
+                SenderId = 10000,
+                CanReply = false
+            };
             OperationResult result = await InfosContract.CreateMessages(dtos);
             return result.ToAjaxResult();
         }
