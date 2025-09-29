@@ -21,15 +21,19 @@ namespace OSharp.Hosting.EntityConfiguration.Infos
         /// </summary>
         partial void EntityConfigurationAppend(EntityTypeBuilder<Message> builder)
         {
-            // 创建 Address 到 JSON 字符串的值转换器
-            var addressConverter = new ValueConverter<Address, string>(
-                v => v == null ? null : JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-                v => string.IsNullOrEmpty(v) ? null : JsonSerializer.Deserialize<Address>(v, (JsonSerializerOptions)null),
-                new ConverterMappingHints(size: 4000));
+            //创建 Address 到 JSON 字符串的值转换器
+           var addressConverter = new ValueConverter<Address, string>(
+               v => v == null ? null : JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+               v => string.IsNullOrEmpty(v) ? null : JsonSerializer.Deserialize<Address>(v, (JsonSerializerOptions)null),
+               new ConverterMappingHints(size: 4000));
 
             builder.Property(b => b.HomeAddress)
                 .HasConversion(addressConverter)
                 .HasColumnType("json");
+            //builder.OwnsOne(b => b.HomeAddress, a =>
+            //{
+            //    a.ToJson();
+            //});
         }
     }
 }
